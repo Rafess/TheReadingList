@@ -35,37 +35,49 @@ class BookList {
         if (this.allBooks.some((existingBook) => existingBook.title === book.title)) {
             console.log('Livro já existe na lista!');
         } else {
-            this.allBooks = [...this.allBooks, book];
-            console.log('Livro inserido com sucesso');
-        if (this.allBooks.some((existingBook) => existingBook.title === book.title)) {
-            console.log('Livro já existe na lista!');
-        } else {
-            this.allBooks = [...this.allBooks, book];
-            console.log('Livro inserido com sucesso');}
-        } 
+            return book;
+
      }
+    }
 
      handleReadBooks(book) {
-         // Verificação se livro inserido já foi lido
-         if (book.read) {
-             this.lastBookRead = book;
+         // Verificação se livro inserido já foi lido e se livro já existe na lista (por titulo)
+          if (this.allBooks.length === 0 && book.read) {
+              this.lastBookRead = book
+          } else if (this.allBooks.length > 0 && book.read) {
+             for (let books of this.allBooks) {
+                if (book.readDate > books.readDate) {
+                    this.lastBookRead = book;
+                    } else {
+                     this.lastBookRead = this.lastBookRead;
+                    }
+                 }
              } else if (this.currentBook === null)
                 { this.currentBook = book;
                     }
+          
     }
 
+        
     addBook(book) {
             this.handleRepeatedBooks(book);
             this.handleReadBooks(book);
-            this.defineNextBook();
-            this.countBooks();
+            this.allBooks = [...this.allBooks, book]
+            console.log(`O livro ${book.title} foi adicionado com sucesso!`)
+            this.rearrangeBooks()
         }
+
     rearrangeBooks() {
         // função para remanejar os livros após a finalização do livro atual;
-        this.lastBookRead = this.currentBook;
+            if (this.currentBook !== null && this.currentBook.read) {
+            this.lastBookRead = this.currentBook;
             this.currentBook = this.nextBook;
-            this.defineNextBook();
+             this.defineNextBook();
             this.countBooks();
+        } else {
+
+            this.defineNextBook();
+            this.countBooks();}
     }
 
     finishCurrentBook() {
@@ -82,12 +94,12 @@ class BookList {
 }
 
 class Book {
-    constructor(title, genre, author, read) {
+    constructor(title, genre, author, read, readDate) {
         this.title = title;
         this.genre = genre;
         this.author = author;
         this.read = read;
-        this.readDate = read ? new Date() : 'Livro ainda não lido';
+        this.readDate = read ? new Date(readDate) : 'Livro ainda não lido';
     }
 }
 
@@ -96,5 +108,5 @@ let myBookList = new BookList();
 let harryPotter = new Book('Harry Potter', 'fantasy', 'J. K. Rowling', false);
 let lordOfTheRings = new Book('The Lord of the Rings', 'fantasy', 'J. R. R. Tolkien', false);
 let prideAndPrejudice = new Book('Pride and Prejudice', 'romantic novel', 'Jane Austen', false);
-let dracula = new Book('Dracula', 'horror novel', 'Bram Stoker', true);
-let dune = new Book('Dune', 'Sci-Fi', 'Frank Herbert', true)
+let dracula = new Book('Dracula', 'horror novel', 'Bram Stoker', true, "october, 15, 2021");
+let dune = new Book('Dune', 'Sci-Fi', 'Frank Herbert', true, "january, 30, 2010")
